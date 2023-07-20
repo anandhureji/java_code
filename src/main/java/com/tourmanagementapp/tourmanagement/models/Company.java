@@ -1,5 +1,6 @@
 package com.tourmanagementapp.tourmanagement.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -40,6 +41,7 @@ public class Company {
     @Pattern(regexp = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b", message = "Invalid email format")
     public String email;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "company",cascade = CascadeType.ALL,orphanRemoval = true)
     public List<TrafficDetails> trafficDetails;
 
