@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,40 +18,45 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Document(collection = "company")
 public class Company {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long Id;
 
-    @Column(name = "branch_id", unique = true, nullable = false)
+    //@Column(name = "branch_id", unique = true, nullable = false)
     private String branchId;
 
     public String branchName;
-    public String place;
-    @Column(nullable = false)
-    @Pattern(regexp = ".*www.*", message = "Website should contain 'www'")
+    public String companyplace;
+   // @Column(nullable = false)
+   // @Pattern(regexp = ".*www.*", message = "Website should contain 'www'")
     public String website;
 
-    @Column(nullable = false)
-    @Size(min = 10, max = 10, message = "Mobile number must be 10 digits")
-    @Pattern(regexp = "\\d+", message = "Mobile number must contain only digits")
+   // @Column(nullable = false)
+   // @Size(min = 10, max = 10, message = "Mobile number must be 10 digits")
+    //@Pattern(regexp = "\\d+", message = "Mobile number must contain only digits")
     private String contact;
 
-    @Column(nullable = false)
-    @Pattern(regexp = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b", message = "Invalid email format")
+    //@Column(nullable = false)
+    //@Pattern(regexp = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b", message = "Invalid email format")
     public String email;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL,orphanRemoval = true)
-    public List<TrafficDetails> trafficDetails;
+    public Double tarrif;
 
-    @Column(name = "added_date", nullable = false)
+    public String place;
+
+
+//    @DBRef
+//    public List<TrafficDetails> trafficDetails;
+
+   // @Column(name = "added_date", nullable = false)
     private LocalDate addedDate;
 
-    @Column(name = "last_update_date")
+   // @Column(name = "last_update_date")
     private LocalDate lastUpdateDate;
+
+    public static final double MIN_TARIFF = 50000.00;
+    public static final double MAX_TARIFF = 100000.00;
+
 
     public static class CustomException extends RuntimeException {
         public CustomException(String message) {

@@ -1,7 +1,6 @@
 package com.tourmanagementapp.tourmanagement.service;
 
 
-import com.tourmanagementapp.tourmanagement.controller.TrafficUpdateRequest;
 import com.tourmanagementapp.tourmanagement.models.Company;
 import com.tourmanagementapp.tourmanagement.models.TrafficDetails;
 import com.tourmanagementapp.tourmanagement.repository.CompanyRepository;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -32,18 +32,10 @@ public class CompanyService {
         company.setBranchId(generateUniqueBranchId());
         company.setAddedDate(LocalDate.now());
         validateCompanyDetails(company);
+        double tarrif = company.getTarrif();
+        validateAndSetTariffDetails(tarrif);
 
         // Save the company with tariff details
-        List<TrafficDetails> tariffDetails = company.getTrafficDetails();
-        if (tariffDetails != null) {
-            for (TrafficDetails tariffDetail : tariffDetails) {
-
-                // Validate and set the tariff details
-              //  validateAndSetTariffDetails(tariffDetail);
-                tariffDetail.setCompany(company);
-            }
-        }
-
         return companyRepository.save(company);
     }
 
@@ -64,20 +56,29 @@ public class CompanyService {
         }
     }
 
+
+
     private String generateUniqueBranchId() {
-        // Implement your logic to generate a unique branchId
-        // Example: Use UUID.randomUUID().toString() to generate a unique identifier
-        return UUID.randomUUID().toString();
+        // Generate a random number with a maximum of 5 digits
+        int maxNumber = 99999; // Maximum 5-digit number
+        int randomBranchId = new Random().nextInt(maxNumber + 1);
+
+        // Format the branch ID with leading zeros if needed
+        String formattedBranchId = String.format("%05d", randomBranchId);
+
+        // Implement any additional logic you need for uniqueness
+        // Example: Check if the generated ID already exists in the database
+
+        return formattedBranchId;
     }
 
-    private void validateAndSetTariffDetails(TrafficUpdateRequest tariffDetail) {
-        double tariff = tariffDetail.getTariff();
-        if (tariff < TrafficDetails.MIN_TARIFF || tariff > TrafficDetails.MAX_TARIFF) {
+    private void validateAndSetTariffDetails(double tariff) {
+        if (tariff < Company.MIN_TARIFF || tariff > Company.MAX_TARIFF) {
             throw new Company.CustomException("Tariff details must range between 50,000 - 100,000.");
         }
     }
 
-    public void updateTrafficDetails(String branchId, TrafficUpdateRequest trafficUpdateRequest) {
+    public void updateTrafficDetails(String branchId, double trafficUpdateRequest) {
         Company company = companyRepository.findByBranchId(branchId);
 
         if (company == null) {
@@ -85,24 +86,22 @@ public class CompanyService {
 
         }
         validateAndSetTariffDetails(trafficUpdateRequest);
-        List<TrafficDetails> trafficDetails = company.getTrafficDetails();
 
 
-        if (trafficDetails != null) {
-            for (TrafficDetails trafficDetail : trafficDetails) {
-                if (trafficDetail.getPlace().equalsIgnoreCase(trafficUpdateRequest.getPlace())) {
+        if (company.getTarrif() != null) {
+
                     // Validate and set the tariff details
 
-                    trafficDetail.setTariff(trafficUpdateRequest.getTariff());
+                    company.setTarrif(trafficUpdateRequest);
 
 
                     // Update the place in the Company entity
                    // company.setPlace(trafficUpdateRequest.getPlace());
                 }
 
-            }
 
-        }
+
+
 
         // Update the lastUpdateDate before saving the Company entity
         company.setLastUpdateDate(LocalDate.now());

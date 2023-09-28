@@ -43,9 +43,9 @@ public class CompanyController {
 
     @PutMapping("/{branchId}/tariff")
     public ResponseEntity<String> updateTariffDetails(@PathVariable String branchId,
-                                                      @RequestBody TrafficUpdateRequest trafficUpdateRequest) {
+                                                      @RequestBody double tarrif) {
         try {
-            companyService.updateTrafficDetails(branchId,trafficUpdateRequest);
+            companyService.updateTrafficDetails(branchId,tarrif);
             return ResponseEntity.ok("Tariff details updated successfully.");
         } catch (Company.CustomException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
