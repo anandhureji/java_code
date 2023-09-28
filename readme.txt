@@ -3,6 +3,7 @@ API Testing urls
 
 post: http://localhost:8080/companies/add
 {
+  "id":"2",
   "branchName": "ABCDE Company",
   "companyplace":"abcd",
   "place": "Andaman",
