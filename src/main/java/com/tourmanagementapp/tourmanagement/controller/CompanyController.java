@@ -1,6 +1,7 @@
 package com.tourmanagementapp.tourmanagement.controller;
 
 import com.tourmanagementapp.tourmanagement.models.Company;
+import com.tourmanagementapp.tourmanagement.models.TrafficUpdateRequest;
 import com.tourmanagementapp.tourmanagement.repository.CompanyRepository;
 import com.tourmanagementapp.tourmanagement.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +42,11 @@ public class CompanyController {
 
     }
 
-    @PutMapping("/{branchId}/tariff")
+    @PutMapping("branch/updatetariff/{branchId}")
     public ResponseEntity<String> updateTariffDetails(@PathVariable String branchId,
-                                                      @RequestBody double tarrif) {
+                                                      @RequestBody TrafficUpdateRequest trafficUpdateRequest) {
         try {
-            companyService.updateTrafficDetails(branchId,tarrif);
+            companyService.updateTrafficDetails(branchId,trafficUpdateRequest);
             return ResponseEntity.ok("Tariff details updated successfully.");
         } catch (Company.CustomException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

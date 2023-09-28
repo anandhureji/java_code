@@ -3,8 +3,11 @@ package com.tourmanagementapp.tourmanagement.service;
 
 import com.tourmanagementapp.tourmanagement.models.Company;
 import com.tourmanagementapp.tourmanagement.models.TrafficDetails;
+import com.tourmanagementapp.tourmanagement.models.TrafficUpdateRequest;
 import com.tourmanagementapp.tourmanagement.repository.CompanyRepository;
+import jakarta.persistence.Table;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -78,34 +81,43 @@ public class CompanyService {
         }
     }
 
-    public void updateTrafficDetails(String branchId, double trafficUpdateRequest) {
+    private void validateAndSetTariffDetails(TrafficUpdateRequest tariff) {
+        double tarrif = tariff.getTariff();
+        if (tarrif < Company.MIN_TARIFF || tarrif > Company.MAX_TARIFF) {
+            throw new Company.CustomException("Tariff details must range between 50,000 - 100,000.");
+        }
+    }
+
+
+    public void updateTrafficDetails(String branchId, TrafficUpdateRequest trafficUpdateRequest) {
         Company company = companyRepository.findByBranchId(branchId);
 
         if (company == null) {
             throw new Company.CustomException("Invalid branchId");
-
         }
         validateAndSetTariffDetails(trafficUpdateRequest);
+        //List<TrafficDetails> trafficDetails = company.getTrafficDetails();
+        if (trafficUpdateRequest != null) {
+            company.setTarrif(trafficUpdateRequest.getTariff());
+            // for (TrafficDetails trafficDetail : trafficDetails) {
+            //   if (trafficDetail.getPlace().equalsIgnoreCase(trafficUpdateRequest.getPlace())) {
+            // Validate and set the tariff details
+
+            //trafficDetail.setTariff(trafficUpdateRequest.getTariff());
 
 
-        if (company.getTarrif() != null) {
+            // Update the place in the Company entity
+            // company.setPlace(trafficUpdateRequest.getPlace());
+            //      }
+            // }
 
-                    // Validate and set the tariff details
-
-                    company.setTarrif(trafficUpdateRequest);
-
-
-                    // Update the place in the Company entity
-                   // company.setPlace(trafficUpdateRequest.getPlace());
-                }
-
-
-
-
+        }
 
         // Update the lastUpdateDate before saving the Company entity
         company.setLastUpdateDate(LocalDate.now());
+
         companyRepository.save(company);
+
     }
 
 

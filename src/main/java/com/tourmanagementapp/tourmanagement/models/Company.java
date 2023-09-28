@@ -21,6 +21,9 @@ import java.util.List;
 @Document(collection = "company")
 public class Company {
 
+    @Id
+    private String id;
+
 
     //@Column(name = "branch_id", unique = true, nullable = false)
     private String branchId;
