@@ -18,13 +18,13 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "company")
+@Document(collection = "companys")
 public class Company {
 
+
+
     @Id
-    private String id;
-
-
+    private int id;
     //@Column(name = "branch_id", unique = true, nullable = false)
     private String branchId;
 

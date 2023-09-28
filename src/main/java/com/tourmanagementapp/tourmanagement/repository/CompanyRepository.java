@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CompanyRepository extends MongoRepository<Company,Long> {
+public interface CompanyRepository extends MongoRepository<Company,Integer> {
     Company findByBranchId(String branchId);
 }
